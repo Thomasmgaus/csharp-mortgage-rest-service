@@ -18,16 +18,16 @@ namespace mortgage_application.Controllers
 
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<Applicant>> Get(string id)
+        public async Task<ActionResult<String>> Get(string id)
         {
             var applicant = await _applicantService.GetAsync(id);
 
             if (applicant is null)
             {
-                return StatusCode(404);
+                return NotFound();
             }
 
-            return applicant;
+            return Ok(JsonConvert.SerializeObject(applicant));
         }
 
 
