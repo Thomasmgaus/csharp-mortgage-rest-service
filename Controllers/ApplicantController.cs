@@ -2,13 +2,11 @@
 using mortgage_application.Model;
 using mortgage_application.Services;
 using mortgage_application.Dto;
-using System.Text.Json;
 using Newtonsoft.Json;
-
 namespace mortgage_application.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class ApplicantController : ControllerBase
     {
         public readonly ApplicantService _applicantService;
@@ -20,16 +18,21 @@ namespace mortgage_application.Controllers
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<String>> Get(string id)
         {
-            var applicant = await _applicantService.GetAsync(id);
-
-            if (applicant is null)
+            try
             {
-                return NotFound();
-            }
+                var applicant = await _applicantService.GetAsync(id);
+
+                if (applicant is null)
+                {
+                    return NotFound();
+                }
 
             return Ok(JsonConvert.SerializeObject(applicant));
+            } catch(Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            } 
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Post(ApplicantDto createApplicantObject)
