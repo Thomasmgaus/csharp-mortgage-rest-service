@@ -1,7 +1,8 @@
 <template>
-    <h1>Here</h1>
-    <div>
+    <div id="mortgage">
+      <div>
         {{mortgageApplicant}}
+      </div>
     </div>
 </template>
 
@@ -19,3 +20,9 @@
         
     
 </script>
+
+<style>
+.mortgage {
+  background-color: mediumseagreen;
+}
+</style>
