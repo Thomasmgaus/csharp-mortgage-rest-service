@@ -19,7 +19,7 @@
       </div>
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
-    <MortgageDisplay v-if="userMortgageRecord" :mortgage-record="userMortgageRecord"></MortgageDisplay>
+    <MortgageDisplay v-if="recordAvailable" :mortgage-record="userMortgageRecord"></MortgageDisplay>
   </div>
 </template>
 
@@ -37,7 +37,11 @@ const loanYears = ref(0)
 const error = ref<string>();
 const startDate = ref<Date>();
 
-let userMortgageRecord = ref<MortgagePaymentByMonth>()
+let recordAvailable = ref<boolean>()
+let userMortgageRecord: MortgagePaymentByMonth = {
+  id: '',
+  monthlyMortgagePayment: []
+}
 
 async function generateRates() {
   if (!name.value || !principleAmount.value || !annualRate.value || !loanYears.value || !startDate.value) {
@@ -66,7 +70,10 @@ async function generateRates() {
       }
     })
 
-    userMortgageRecord.value = await response.json();
+    userMortgageRecord = await response.json();
+    if(userMortgageRecord.MonthlyMortgagePayment.length > 0) {
+      recordAvailable.value = true
+    }
   } catch (e) {
     console.log("Failed to post applicant data", e)
     error.value = "There was an issue generating rates, please try again"

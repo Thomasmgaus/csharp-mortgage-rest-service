@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import Mortgage from './components/MortgageView.vue';
+    import Mortgage from './components/Mortgage.vue';
 </script>
 
 <template>

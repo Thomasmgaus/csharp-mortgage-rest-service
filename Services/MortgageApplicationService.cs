@@ -45,7 +45,8 @@ namespace mortgage_application.Services
                     ApplicantDto.StartDate.AddMonths(i).ToShortDateString(),
                     interest, 
                     thisMonthPrinciple, 
-                    monthlyPayment, 
+                    monthlyPayment,
+                    remainder,
                     totalInterest, 
                     Math.Round(monthlyPayment * (i + 1), 2)
                    );

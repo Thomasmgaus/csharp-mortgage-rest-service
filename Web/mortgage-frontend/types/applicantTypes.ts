@@ -7,15 +7,16 @@ export type Applicant = {
 }
 
 export type MonthlyPayment = {
-    paymentDate: string,
-    interestPaid: number,
-    principlePaid: number,
-    monthlyPayment: number,
-    totalInterest: number,
-    totalPayment: number,
+    PaymentDate: string,
+    InterestPaid: number,
+    PrinciplePaid: number,
+    Payment: number,
+    TotalInterest: number,
+    TotalPayment: number,
+    RemainingBalance: number,
 }
 
 export type MortgagePaymentByMonth = {
-    id: string,
-    monthlyMortgagePayment: MonthlyPayment[]
+    Id: string,
+    MonthlyMortgagePayment: MonthlyPayment[]
 }

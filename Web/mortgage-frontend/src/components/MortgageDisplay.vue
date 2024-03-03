@@ -1,8 +1,7 @@
 <template>
   <div id="mortgage-display">
-    <table v-if="test">
-      <div id="table-header">
-
+    <table>
+      <thead class="header">
         <th>Payment Date</th>
         <th>Remaining Balance</th>
         <th>Principle Paid</th>
@@ -10,31 +9,38 @@
         <th>Payment</th>
         <th>Total Interest</th>
         <th>Total Paid</th>
-
-      </div>
-      <div id="table-contents"  v-for="record in test.monthlyMortgagePayment" :key="record.paymentDate">
-        <tr>
-          <td>{{record.paymentDate }}</td>
-          <td>{{record.interestPaid }}</td>
-          <td>{{record.principlePaid }}</td>
-          <td>{{record.interestPaid}}</td>
-          <td>{{record.monthlyPayment}}</td>
-          <td>{{record.totalInterest}}</td>
-          <td>{{record.totalPayment}}</td>
+      </thead>
+      <tbody>
+        <tr id="table-contents" class="table-body" v-for="record in mortgageRecord.MonthlyMortgagePayment" :key="record.PaymentDate">
+          <td>{{record.PaymentDate }}</td>
+          <td>{{record.RemainingBalance }}</td>
+          <td>{{record.PrinciplePaid }}</td>
+          <td>{{record.InterestPaid}}</td>
+          <td>{{record.Payment}}</td>
+          <td>{{record.TotalInterest}}</td>
+          <td>{{record.TotalPayment}}</td>
         </tr>
-      </div>
+      </tbody>
     </table>
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { MortgagePaymentByMonth } from "@/../types/applicantTypes";
-import {ref, type Ref} from "vue";
 
-const props = defineProps<{ mortgageRecord: Ref<MortgagePaymentByMonth> }>()
+const props = defineProps<{ mortgageRecord: MortgagePaymentByMonth }>()
 
-const test = ref(props.mortgageRecord)
-
-console.log("lol what is this", test.value)
-console.log("lol what is this2", props.mortgageRecord.value)
+console.log('payment', props.mortgageRecord)
 </script>
+
+<style scoped>
+  .header {
+    background: gainsboro;
+    th {
+      width: 25%;
+    }
+  }
+  .table-body {
+    background: grey;
+  }
+</style>
