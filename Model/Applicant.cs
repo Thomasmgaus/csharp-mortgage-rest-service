@@ -11,6 +11,8 @@ namespace mortgage_application.Model
         
         public List<MonthlyPayment> MonthlyMortgagePayment { get; set; }
 
+        public DateTime startDate { get; set; }
+
         public Applicant(List<MonthlyPayment> list)
         {
             this.MonthlyMortgagePayment = list;

@@ -22,24 +22,33 @@ namespace mortgage_application.Services
         {
             List<MonthlyPayment> generateMortagePayments = new List<MonthlyPayment>();
 
-            double monlthyInterestRate = (this.ApplicantDto.AnnualRate / 12);
+            var monlthyInterestRate = (this.ApplicantDto.AnnualRate / 12);
+
             double remainder = this.ApplicantDto.PrincipleAmount;
 
-            double exponent = Math.Pow((1 + monlthyInterestRate), this.ApplicantDto.LoanMonths);
-            double numerator = (monlthyInterestRate * exponent);
-            double denomenator = exponent - 1;
+            var exponent = Math.Pow((1 + monlthyInterestRate), this.ApplicantDto.LoanMonths);
+            var numerator = (monlthyInterestRate * exponent);
+            var denomenator = exponent - 1;
 
-            double monthlyPayment = Math.Round((remainder * (numerator / denomenator)), 2);
+            var monthlyPayment = Math.Round((remainder * (numerator / denomenator)), 2);
+
             double totalInterest = 0;
 
             for (int i = 0; i < this.ApplicantDto.LoanMonths; i++)
             {
-                double interest = Math.Round((monlthyInterestRate * remainder), 2);
+                var interest = Math.Round((monlthyInterestRate * remainder), 2);
                 totalInterest = Math.Round(totalInterest + interest, 2);
-                double thisMonthPrinciple = Math.Round((monthlyPayment - interest), 2);
+                var thisMonthPrinciple = Math.Round((monthlyPayment - interest), 2);
                 remainder = Math.Round((remainder - thisMonthPrinciple), 2);
                 
-                MonthlyPayment record = new MonthlyPayment(DateTime.Now.AddMonths(i), interest, thisMonthPrinciple, monthlyPayment, totalInterest, monthlyPayment * (i + 1));
+                MonthlyPayment record = new MonthlyPayment(
+                    ApplicantDto.StartDate.AddMonths(i).ToShortDateString(),
+                    interest, 
+                    thisMonthPrinciple, 
+                    monthlyPayment, 
+                    totalInterest, 
+                    Math.Round(monthlyPayment * (i + 1), 2)
+                   );
                 generateMortagePayments.Add(record);
             }
 

@@ -27,7 +27,7 @@ namespace mortgage_application.Controllers
                     return NotFound();
                 }
 
-            return Ok(JsonConvert.SerializeObject(applicant));
+                 return Ok(JsonConvert.SerializeObject(applicant));
             } catch(Exception ex)
             {
                 return BadRequest(ex.ToString());
@@ -37,13 +37,20 @@ namespace mortgage_application.Controllers
         [HttpPost]
         public async Task<IActionResult> Post(ApplicantDto createApplicantObject)
         {
-            MortgageApplicationService ms = new MortgageApplicationService(createApplicantObject);
+            try
+            {
+                MortgageApplicationService ms = new MortgageApplicationService(createApplicantObject);
 
-            Applicant newApplicant = ms.CreateApplicant();
+                Applicant newApplicant = ms.CreateApplicant();
 
-            await _applicantService.CreateAsync(newApplicant);
+                await _applicantService.CreateAsync(newApplicant);
 
-            return CreatedAtAction(nameof(Post), new { id = newApplicant.Id }, JsonConvert.SerializeObject(newApplicant));
+                return CreatedAtAction(nameof(Post), new { id = newApplicant.Id }, JsonConvert.SerializeObject(newApplicant));
+
+            } catch(Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
         }
 
     }
