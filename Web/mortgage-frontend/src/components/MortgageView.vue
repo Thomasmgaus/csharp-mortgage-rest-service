@@ -19,35 +19,16 @@
       </div>
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
-    <div v-if="userMortgageRecord"> {{"Here"}} </div>
+    <MortgageDisplay v-if="userMortgageRecord" :mortgage-record="userMortgageRecord"></MortgageDisplay>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
-import {ModuleNode} from "vite";
+import {reactive, ref} from 'vue'
+import type {Applicant, MortgagePaymentByMonth} from "@/../types/applicantTypes";
+import MortgageDisplay from "@/components/MortgageDisplay.vue";
 
-type Applicant = {
-  name: string,
-  principleAmount: number,
-  annualRate: number,
-  loanMonths: number,
-  startDate: Date,
-}
 
-type MonthlyPayment = {
-  paymentDate: string,
-  interestPaid: number,
-  principlePaid: number,
-  MonthlyPayment: number,
-  TotalInterest: number,
-  TotalPayment: number,
-}
-
-type MortgagePaymentByMonth = {
-  id: string,
-  monthlyMortgagePayment: MonthlyPayment[]
-}
 
 const name = ref('')
 const principleAmount = ref(0)
@@ -56,7 +37,7 @@ const loanYears = ref(0)
 const error = ref<string>();
 const startDate = ref<Date>();
 
-let userMortgageRecord = ref<MortgagePaymentByMonth>();
+let userMortgageRecord = ref<MortgagePaymentByMonth>()
 
 async function generateRates() {
   if (!name.value || !principleAmount.value || !annualRate.value || !loanYears.value || !startDate.value) {
@@ -77,7 +58,7 @@ async function generateRates() {
 
   try {
 
-    const tst = await fetch('http://localhost:5137/applicant', {
+    const response = await fetch('http://localhost:5137/applicant', {
       method: "POST",
       body: JSON.stringify(applicant),
       headers: {
@@ -85,11 +66,9 @@ async function generateRates() {
       }
     })
 
-    userMortgageRecord.value = await tst.json();
-
-    console.log(result)
+    userMortgageRecord.value = await response.json();
   } catch (e) {
-    console.log("Failed to post applicant data")
+    console.log("Failed to post applicant data", e)
     error.value = "There was an issue generating rates, please try again"
   }
 
