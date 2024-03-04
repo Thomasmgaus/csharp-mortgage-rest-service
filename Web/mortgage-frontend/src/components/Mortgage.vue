@@ -42,7 +42,7 @@ const startDate = ref<Date>();
 const recordAvailable = ref<boolean>()
 
 let userMortgageRecord: MortgagePaymentByMonth
-let currentRecord: ref<{ index: number, schedule: Schedule }>;
+let currentRecord: { index: number, schedule: Schedule };
 
 onMounted(async () => {
   const userId: string | null = localStorage.userId
@@ -52,7 +52,7 @@ onMounted(async () => {
     userMortgageRecord = await response.json();
     if (userMortgageRecord?.Schedules) {
       const index = userMortgageRecord.Schedules.length - 1
-      currentRecord.value = {index: index, schedule: userMortgageRecord.Schedules[index]}
+      currentRecord = {index: index, schedule: userMortgageRecord.Schedules[index]}
 
       recordAvailable.value = true
     }
@@ -60,13 +60,11 @@ onMounted(async () => {
 })
 
 function back() {
-  debugger
   currentRecord.index = currentRecord.index - 1
   currentRecord.schedule = userMortgageRecord.Schedules[currentRecord.index]
 }
 
 function forward() {
-  debugger
   currentRecord.index = currentRecord.index + 1
   currentRecord.schedule = userMortgageRecord.Schedules[currentRecord.index]
 }
