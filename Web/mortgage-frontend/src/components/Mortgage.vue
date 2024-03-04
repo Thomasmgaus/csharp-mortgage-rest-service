@@ -1,17 +1,15 @@
 <template>
   <div id="mortgage-display" class="mortgage-display">
-    <h3>Mortgage Repayment calculator</h3>
-    <span v-if="error">{{ error.toUpperCase() }}</span>
+    <h3>Mortgage Amortization Calculator</h3>
+    <span v-if="error" class="error-message">{{ error.toUpperCase() }}</span>
     <div class="applicant-field">
       <div id="labels" class="applicant-column">
-        <label class="spacing">Name</label>
         <label class="spacing">Principle Amount</label>
         <label class="spacing">Annual Rate</label>
         <label class="spacing">Loan Term</label>
         <label class="spacing">Start Date</label>
       </div>
       <div id="fields" class="applicant-column">
-        <input v-model="name">
         <input v-model="principleAmount">
         <input v-model="annualRate">
         <input v-model="loanYears">
@@ -24,10 +22,9 @@
 </template>
 
 <script lang="ts" setup>
-import {reactive, ref} from 'vue'
-import type {Applicant, MortgagePaymentByMonth} from "@/../types/applicantTypes";
+import {onMounted, ref} from 'vue'
+import type {Applicant, MortgagePaymentByMonth} from "../../types/utilTypes";
 import MortgageDisplay from "@/components/MortgageDisplay.vue";
-
 
 
 const name = ref('')
@@ -38,13 +35,24 @@ const error = ref<string>();
 const startDate = ref<Date>();
 
 let recordAvailable = ref<boolean>()
-let userMortgageRecord: MortgagePaymentByMonth = {
-  id: '',
-  monthlyMortgagePayment: []
-}
+let userMortgageRecord: MortgagePaymentByMonth
+
+onMounted(async () => {
+  const userId: string | null = localStorage.userId
+
+  if (userId) {
+    const response = await fetch(`http://localhost:5137/applicant/${userId}`)
+    userMortgageRecord = await response.json();
+    if (userMortgageRecord?.MonthlyMortgagePayment) {
+      recordAvailable.value = true
+    }
+  }
+})
 
 async function generateRates() {
-  if (!name.value || !principleAmount.value || !annualRate.value || !loanYears.value || !startDate.value) {
+  recordAvailable.value = false
+
+  if (!principleAmount.value || !annualRate.value || !loanYears.value || !startDate.value) {
     error.value = "Please enter your name and amounts greater than zero"
     return
   }
@@ -52,8 +60,8 @@ async function generateRates() {
   //reset errors if user had any
   error.value = ""
 
+
   const applicant: Applicant = {
-    name: name.value,
     principleAmount: principleAmount.value,
     annualRate: annualRate.value / 100,
     loanMonths: loanYears.value * 12,
@@ -71,8 +79,11 @@ async function generateRates() {
     })
 
     userMortgageRecord = await response.json();
-    if(userMortgageRecord.MonthlyMortgagePayment.length > 0) {
+    if (userMortgageRecord?.MonthlyMortgagePayment) {
       recordAvailable.value = true
+
+      // save data for multiple sessions
+      localStorage.setItem('userId', userMortgageRecord.Id)
     }
   } catch (e) {
     console.log("Failed to post applicant data", e)
@@ -85,6 +96,10 @@ async function generateRates() {
 </script>
 
 <style scoped>
+
+h3 {
+  font-family: "Cascadia Code";
+}
 
 .mortgage-display {
   display: flex;
@@ -100,6 +115,7 @@ async function generateRates() {
   max-width: 500px;
   max-height: 300px;
   margin: 0 auto;
+  margin-bottom: 24px;
 }
 
 .applicant-column {
@@ -111,11 +127,14 @@ async function generateRates() {
 }
 
 .submit-button {
-  margin: 12px;
   padding: 12px;
   max-width: 300px;
   margin: 0 auto;
+  margin-bottom: 24px;
 }
 
+.error-message {
+  background-color: orangered;
+}
 
 </style>

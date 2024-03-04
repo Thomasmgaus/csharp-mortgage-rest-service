@@ -1,5 +1,4 @@
 export type Applicant = {
-    name: string,
     principleAmount: number,
     annualRate: number,
     loanMonths: number,

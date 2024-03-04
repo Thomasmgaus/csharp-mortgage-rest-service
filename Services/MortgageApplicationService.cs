@@ -10,7 +10,7 @@ namespace mortgage_application.Services
 
         public MortgageApplicationService(ApplicantDto applicantDto)
         {
-           this.ApplicantDto = applicantDto;
+           ApplicantDto = applicantDto;
         }
 
         public Applicant CreateApplicant()
@@ -22,27 +22,31 @@ namespace mortgage_application.Services
         {
             List<MonthlyPayment> generateMortagePayments = new List<MonthlyPayment>();
 
-            var monlthyInterestRate = (this.ApplicantDto.AnnualRate / 12);
+            var monlthyInterestRate = ApplicantDto.AnnualRate / 12;
 
-            double remainder = this.ApplicantDto.PrincipleAmount;
+            double remainder = ApplicantDto.PrincipleAmount;
 
-            var exponent = Math.Pow((1 + monlthyInterestRate), this.ApplicantDto.LoanMonths);
-            var numerator = (monlthyInterestRate * exponent);
+            var exponent = Math.Pow(1 + monlthyInterestRate, ApplicantDto.LoanMonths);
+            var numerator = monlthyInterestRate * exponent;
             var denomenator = exponent - 1;
 
-            var monthlyPayment = Math.Round((remainder * (numerator / denomenator)), 2);
+            var monthlyPayment = Math.Round(remainder * (numerator / denomenator), 2);
 
             double totalInterest = 0;
+            DateTime startDate = ApplicantDto.StartDate ?? DateTime.Now;
 
-            for (int i = 0; i < this.ApplicantDto.LoanMonths; i++)
+            for (int i = 0; i < ApplicantDto.LoanMonths; i++)
             {
-                var interest = Math.Round((monlthyInterestRate * remainder), 2);
+                var interest = Math.Round(monlthyInterestRate * remainder, 2);
                 totalInterest = Math.Round(totalInterest + interest, 2);
-                var thisMonthPrinciple = Math.Round((monthlyPayment - interest), 2);
-                remainder = Math.Round((remainder - thisMonthPrinciple), 2);
+                var thisMonthPrinciple = Math.Round(monthlyPayment - interest, 2);
+                remainder = Math.Round(remainder - thisMonthPrinciple, 2);
+
+                if(remainder < 0) remainder = 0;
+                
                 
                 MonthlyPayment record = new MonthlyPayment(
-                    ApplicantDto.StartDate.AddMonths(i).ToShortDateString(),
+                    startDate.AddMonths(i).ToShortDateString(),
                     interest, 
                     thisMonthPrinciple, 
                     monthlyPayment,
