@@ -15,7 +15,15 @@ export type MonthlyPayment = {
     RemainingBalance: number,
 }
 
+export type Schedule = {
+    PrincipleAmount: number,
+    AnnualRate: number,
+    LoanMonths: number,
+    StartDate: Date,
+    Payments: MonthlyPayment[]
+}
+
 export type MortgagePaymentByMonth = {
     Id: string,
-    MonthlyMortgagePayment: MonthlyPayment[]
+    Schedules: Schedule[]
 }

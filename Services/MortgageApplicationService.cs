@@ -1,6 +1,5 @@
 ﻿using mortgage_application.Dto;
 using mortgage_application.Model;
-using System.Collections.ObjectModel;
 
 namespace mortgage_application.Services
 {
@@ -13,9 +12,20 @@ namespace mortgage_application.Services
            ApplicantDto = applicantDto;
         }
 
-        public Applicant CreateApplicant()
+        public Applicant CreateMortgageSchedule()
+        {   
+            Applicant applicant = new Applicant();
+            Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
+            applicant.AddSchedule(schedule);
+            return applicant;
+        }
+
+        public Applicant AddMortgageSchedule(Applicant applicant)
         {
-            return new Applicant(GenerateMonthlyMortgageRates());
+            Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
+            applicant.AddSchedule(schedule);
+
+            return applicant;
         }
 
         public List<MonthlyPayment> GenerateMonthlyMortgageRates()

@@ -17,13 +17,18 @@
       </div>
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
-    <MortgageDisplay v-if="recordAvailable" :mortgage-record="userMortgageRecord"></MortgageDisplay>
+    <div v-if="recordAvailable" id="navigation">
+      <button v-if="currentRecord.index != 0" @click="back()">View Last Record</button>
+      <button v-if="currentRecord.index != userMortgageRecord.Schedules.length" @click="forward()">View Next Record
+      </button>
+    </div>
+    <MortgageDisplay v-if="recordAvailable" :mortgage-record="currentRecord.schedule.Payments"></MortgageDisplay>
   </div>
 </template>
 
 <script lang="ts" setup>
 import {onMounted, ref} from 'vue'
-import type {Applicant, MortgagePaymentByMonth} from "../../types/utilTypes";
+import type {Applicant, MortgagePaymentByMonth, Schedule} from "../../types/utilTypes";
 import MortgageDisplay from "@/components/MortgageDisplay.vue";
 
 
@@ -34,8 +39,10 @@ const loanYears = ref(0)
 const error = ref<string>();
 const startDate = ref<Date>();
 
-let recordAvailable = ref<boolean>()
+const recordAvailable = ref<boolean>()
+
 let userMortgageRecord: MortgagePaymentByMonth
+let currentRecord: ref<{ index: number, schedule: Schedule }>;
 
 onMounted(async () => {
   const userId: string | null = localStorage.userId
@@ -43,11 +50,26 @@ onMounted(async () => {
   if (userId) {
     const response = await fetch(`http://localhost:5137/applicant/${userId}`)
     userMortgageRecord = await response.json();
-    if (userMortgageRecord?.MonthlyMortgagePayment) {
+    if (userMortgageRecord?.Schedules) {
+      const index = userMortgageRecord.Schedules.length - 1
+      currentRecord.value = {index: index, schedule: userMortgageRecord.Schedules[index]}
+
       recordAvailable.value = true
     }
   }
 })
+
+function back() {
+  debugger
+  currentRecord.index = currentRecord.index - 1
+  currentRecord.schedule = userMortgageRecord.Schedules[currentRecord.index]
+}
+
+function forward() {
+  debugger
+  currentRecord.index = currentRecord.index + 1
+  currentRecord.schedule = userMortgageRecord.Schedules[currentRecord.index]
+}
 
 async function generateRates() {
   recordAvailable.value = false
@@ -68,6 +90,16 @@ async function generateRates() {
     startDate: startDate.value
   }
 
+  const userId = localStorage.userId
+  if (userId) {
+    await updateUser(userId, applicant)
+  } else {
+    await createNewUser(applicant)
+  }
+
+}
+
+async function createNewUser(applicant: Applicant) {
   try {
 
     const response = await fetch('http://localhost:5137/applicant', {
@@ -79,7 +111,10 @@ async function generateRates() {
     })
 
     userMortgageRecord = await response.json();
-    if (userMortgageRecord?.MonthlyMortgagePayment) {
+    if (userMortgageRecord?.Schedules) {
+      const index = userMortgageRecord.Schedules.length - 1
+      currentRecord = {index: index, schedule: userMortgageRecord.Schedules[index]}
+
       recordAvailable.value = true
 
       // save data for multiple sessions
@@ -89,7 +124,29 @@ async function generateRates() {
     console.log("Failed to post applicant data", e)
     error.value = "There was an issue generating rates, please try again"
   }
+}
 
+async function updateUser(id: string, applicant: Applicant) {
+  try {
+    const response = await fetch(`http://localhost:5137/applicant/update/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(applicant),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
+    userMortgageRecord = await response.json();
+    if (userMortgageRecord?.Schedules) {
+      const index = userMortgageRecord.Schedules.length - 1
+      currentRecord = {index: index, schedule: userMortgageRecord.Schedules[index]}
+
+      recordAvailable.value = true
+    }
+  } catch (e) {
+    console.log("Failed to post applicant data", e)
+    error.value = "There was an issue generating rates, please try again"
+  }
 }
 
 

@@ -11,7 +11,7 @@
       <th>Total Paid</th>
       </thead>
       <tbody>
-      <tr v-for="(record, index) in mortgageRecord.MonthlyMortgagePayment" id="table-contents" :key="record.PaymentDate"
+      <tr v-for="(record, index) in mortgageRecord" id="table-contents" :key="record.PaymentDate"
           :class="index % 2 === 0 ? 'table-body-one' : 'table-body-two' ">
         <td>{{ record.PaymentDate }}</td>
         <td>{{ record.RemainingBalance }}</td>
@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts" setup>
-import type {MortgagePaymentByMonth} from "../../types/utilTypes";
+import type {MonthlyPayment} from "../../types/utilTypes";
 
-const props = defineProps<{ mortgageRecord: MortgagePaymentByMonth }>()
+const props = defineProps<{ mortgageRecord: MonthlyPayment[] }>()
 
 </script>
 

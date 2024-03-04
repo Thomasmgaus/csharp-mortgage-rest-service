@@ -41,7 +41,7 @@ namespace mortgage_application.Controllers
             {
                 MortgageApplicationService ms = new MortgageApplicationService(createApplicantObject);
 
-                Applicant newApplicant = ms.CreateApplicant();
+                Applicant newApplicant = ms.CreateMortgageSchedule();
 
                 await _applicantService.CreateAsync(newApplicant);
 
@@ -53,5 +53,31 @@ namespace mortgage_application.Controllers
             }
         }
 
+        
+        [HttpPut("update/{id:length(24)}")]
+        public async Task<IActionResult> Put(String id, ApplicantDto applicantDto)
+        {
+            try
+            {
+                var applicant = await _applicantService.GetAsync(id);
+
+                if(applicant is null)
+                {
+                    return NotFound();
+                }
+                
+                MortgageApplicationService ms = new MortgageApplicationService(applicantDto);
+
+                Applicant updatedApplicant = ms.AddMortgageSchedule(applicant);
+
+                await _applicantService.UpdateAsync(id, updatedApplicant);
+
+                return CreatedAtAction(nameof(Post), new { id = updatedApplicant.Id }, JsonConvert.SerializeObject(updatedApplicant));
+
+            } catch(Exception ex)
+            {
+                return BadRequest(ex.ToString());
+            }
+        }
     }
 }

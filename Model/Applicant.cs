@@ -8,12 +8,16 @@ namespace mortgage_application.Model
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        
-        public List<MonthlyPayment> MonthlyMortgagePayment { get; set; }
 
-        public Applicant(List<MonthlyPayment> list)
+        public List<Schedule> Schedules { get; set; }
+
+        public Applicant() {
+            Schedules = new List<Schedule>();
+        }
+
+        public void AddSchedule(Schedule schedule)
         {
-            this.MonthlyMortgagePayment = list;
+            Schedules.Add(schedule);
         }
 
     }
