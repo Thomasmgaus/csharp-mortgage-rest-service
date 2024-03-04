@@ -32,20 +32,21 @@ namespace mortgage_application.Services
         {
             List<MonthlyPayment> generateMortagePayments = new List<MonthlyPayment>();
 
-            var monlthyInterestRate = ApplicantDto.AnnualRate / 12;
-
+            var loanMonths = ApplicantDto.LoanYears * 12;
             double remainder = ApplicantDto.PrincipleAmount;
+            DateTime startDate = ApplicantDto.StartDate ?? DateTime.Now;
+            var monlthyInterestRate = (ApplicantDto.AnnualRate / 100) / 12;
 
-            var exponent = Math.Pow(1 + monlthyInterestRate, ApplicantDto.LoanMonths);
+
+            var exponent = Math.Pow(1 + monlthyInterestRate, loanMonths);
             var numerator = monlthyInterestRate * exponent;
             var denomenator = exponent - 1;
 
             var monthlyPayment = Math.Round(remainder * (numerator / denomenator), 2);
 
             double totalInterest = 0;
-            DateTime startDate = ApplicantDto.StartDate ?? DateTime.Now;
 
-            for (int i = 0; i < ApplicantDto.LoanMonths; i++)
+            for (int i = 0; i < loanMonths; i++)
             {
                 var interest = Math.Round(monlthyInterestRate * remainder, 2);
                 totalInterest = Math.Round(totalInterest + interest, 2);

@@ -5,15 +5,15 @@ namespace mortgage_application.Model
     public class Schedule
     {
         public long PrincipleAmount { get; set; }
-        public double AnnnualRate { get; set; }
-        public int LoanMonths { get; set; }
+        public double AnnualRate { get; set; }
+        public int LoanYears{ get; set; }
         public String? StartDate { get; set; }
         public List<MonthlyPayment> Payments { get; set;}
 
         public Schedule(ApplicantDto applicantDto, List<MonthlyPayment> monthlyPayments) {
             PrincipleAmount = applicantDto.PrincipleAmount;
-            AnnnualRate = applicantDto.AnnualRate;
-            LoanMonths = applicantDto.LoanMonths;
+            AnnualRate = applicantDto.AnnualRate;
+            LoanYears = applicantDto.LoanYears;
             StartDate = applicantDto.StartDate.ToString();
 
             Payments = monthlyPayments;

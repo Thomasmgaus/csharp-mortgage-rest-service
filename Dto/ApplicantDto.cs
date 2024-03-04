@@ -6,7 +6,7 @@ namespace mortgage_application.Dto
     {
         [JsonPropertyName("principleAmount")] public long PrincipleAmount { get; set; }
         [JsonPropertyName("annualRate")] public double AnnualRate { get; set; }
-        [JsonPropertyName("loanMonths")] public int LoanMonths { get; set; }
+        [JsonPropertyName("loanYears")] public int LoanYears { get; set; }
         [JsonPropertyName("startDate")] public DateTime? StartDate { get; set; }
     }
 }

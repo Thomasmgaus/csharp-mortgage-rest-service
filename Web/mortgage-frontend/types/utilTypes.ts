@@ -1,7 +1,7 @@
 export type Applicant = {
     principleAmount: number,
     annualRate: number,
-    loanMonths: number,
+    loanYears: number,
     startDate: Date,
 }
 
@@ -18,7 +18,7 @@ export type MonthlyPayment = {
 export type Schedule = {
     PrincipleAmount: number,
     AnnualRate: number,
-    LoanMonths: number,
+    LoanYears: number,
     StartDate: Date,
     Payments: MonthlyPayment[]
 }
