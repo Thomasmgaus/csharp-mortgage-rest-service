@@ -14,21 +14,44 @@ namespace mortgage_application.Services
 
         public Applicant CreateMortgageSchedule()
         {   
-            Applicant applicant = new Applicant();
-            Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
-            applicant.AddSchedule(schedule);
-            return applicant;
+            if(VerifyDto())
+            {
+                Applicant applicant = new Applicant();
+                Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
+
+                applicant.AddSchedule(schedule);
+
+                return applicant;
+            }
+            return null;
         }
 
         public Applicant AddMortgageSchedule(Applicant applicant)
         {
-            Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
-            applicant.AddSchedule(schedule);
+            if(VerifyDto())
+            {
+                Schedule schedule = new Schedule(ApplicantDto, GenerateMonthlyMortgageRates());
 
-            return applicant;
+                applicant.AddSchedule(schedule);
+
+                return applicant;
+            }
+            return null;
+       }
+
+        private Boolean VerifyDto()
+        {
+            if (ApplicantDto.PrincipleAmount == null || ApplicantDto.PrincipleAmount < 1 ||
+                ApplicantDto.AnnualRate == null || ApplicantDto.AnnualRate < 1 || 
+                ApplicantDto.LoanYears == null || ApplicantDto.LoanYears < 1 || 
+                ApplicantDto.StartDate == null)
+            {
+                return false
+            }
+            return true
         }
 
-        public List<MonthlyPayment> GenerateMonthlyMortgageRates()
+        private List<MonthlyPayment> GenerateMonthlyMortgageRates()
         {
             List<MonthlyPayment> generateMortagePayments = new List<MonthlyPayment>();
 
