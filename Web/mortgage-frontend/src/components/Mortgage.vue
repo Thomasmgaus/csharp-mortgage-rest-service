@@ -17,37 +17,53 @@
       </div>
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
-    <div v-if="recordAvailable" id="navigation">
+    <div v-if="currentRecord" id="navigation">
       <button v-if="showBackButton" @click="back()">View Last Record</button>
-      <button
-          v-if="showForwardButton"
-          @click="forward()">View Next Record
-      </button>
+      <button v-if="showForwardButton" @click="forward()">View Next Record</button>
     </div>
-    <MortgageDisplay v-if="currentRecord?.schedule"
-                     :mortgage-record="currentRecord.schedule.Payments"></MortgageDisplay>
+    <MortgageDisplay v-if="currentRecord"
+                     :mortgage-record="currentRecord.Payments"></MortgageDisplay>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import type {Applicant, MortgagePaymentByMonth, Schedule} from "../../types/utilTypes";
 import MortgageDisplay from "@/components/MortgageDisplay.vue";
 
-
+// state variables
 const principleAmount = ref(0)
 const annualRate = ref(0)
 const loanYears = ref(0)
 const error = ref<string>();
 const startDate = ref<Date>();
 
-const recordAvailable = ref<boolean>()
-
+let recordIndex = ref<number>(0);
 let userMortgageRecord = ref<MortgagePaymentByMonth>()
-let currentRecord = ref<{ index: number, schedule: Schedule }>();
 
-const showBackButton = computed(() => currentRecord?.value?.index != 0)
-const showForwardButton = computed(() => userMortgageRecord && currentRecord?.value && currentRecord?.value?.index + 1 != userMortgageRecord.value?.Schedules.length)
+// computed variables
+const currentRecord = computed(() => {
+  if(!userMortgageRecord.value) {
+    return undefined
+  } else {
+    return userMortgageRecord.value?.Schedules[recordIndex.value]
+  }
+})
+
+const showBackButton = computed(() => recordIndex.value > 0)
+
+const showForwardButton = computed(() => {
+  return userMortgageRecord.value &&
+      userMortgageRecord.value.Schedules?.length > 1
+      && recordIndex.value != userMortgageRecord.value?.Schedules.length - 1
+})
+
+// watchers
+watch(currentRecord, () => {
+  if(currentRecord.value) {
+    setProperties(currentRecord.value)
+  }
+})
 
 onMounted(async () => {
   const userId: string | null = localStorage.userId
@@ -56,32 +72,20 @@ onMounted(async () => {
     const response = await fetch(`http://localhost:5137/applicant/${userId}`)
     userMortgageRecord.value = await response.json();
     if (userMortgageRecord?.value?.Schedules) {
-      const index = userMortgageRecord.value.Schedules.length - 1
-      currentRecord.value = {index, schedule: userMortgageRecord.value.Schedules[index]}
-      setProperties(currentRecord.value?.schedule)
-
-      recordAvailable.value = true
+      recordIndex.value = userMortgageRecord.value.Schedules.length - 1
     }
   }
 })
 
 function back() {
-  if (currentRecord?.value && userMortgageRecord.value) {
-    currentRecord.value = {
-      index: currentRecord.value.index - 1,
-      schedule: userMortgageRecord.value.Schedules[currentRecord.value.index - 1]
-    }
-    setProperties(currentRecord.value?.schedule)
+  if (currentRecord?.value) {
+    recordIndex.value -= 1
   }
 }
 
 function forward() {
-  if (currentRecord?.value && userMortgageRecord.value) {
-    currentRecord.value = {
-      index: currentRecord.value.index + 1,
-      schedule: userMortgageRecord.value.Schedules[currentRecord.value.index + 1]
-    }
-    setProperties(currentRecord.value?.schedule)
+  if (currentRecord?.value) {
+    recordIndex.value += 1
   }
 }
 
@@ -94,8 +98,6 @@ function setProperties(schedule: Schedule) {
 }
 
 async function generateRates() {
-  recordAvailable.value = false
-
   if (!principleAmount.value || !annualRate.value || !loanYears.value || !startDate.value) {
     error.value = "Please enter a valid date and amounts greater than zero"
     return
@@ -134,11 +136,7 @@ async function createNewUser(applicant: Applicant) {
 
     userMortgageRecord.value = await response.json();
     if (userMortgageRecord.value?.Schedules) {
-      const index = userMortgageRecord.value.Schedules.length - 1
-      currentRecord.value = {index: index, schedule: userMortgageRecord.value.Schedules[index]}
-
-      recordAvailable.value = true
-
+      recordIndex.value = userMortgageRecord.value.Schedules.length - 1
       // save data for multiple sessions
       localStorage.setItem('userId', userMortgageRecord.value.Id)
     }
@@ -160,10 +158,7 @@ async function updateUser(id: string, applicant: Applicant) {
 
     userMortgageRecord.value = await response.json();
     if (userMortgageRecord.value?.Schedules) {
-      const index = userMortgageRecord.value.Schedules.length - 1
-      currentRecord.value = {index: index, schedule: userMortgageRecord.value.Schedules[index]}
-
-      recordAvailable.value = true
+      recordIndex.value = userMortgageRecord.value.Schedules.length - 1
     }
   } catch (e) {
     console.log("Failed to post applicant data", e)
