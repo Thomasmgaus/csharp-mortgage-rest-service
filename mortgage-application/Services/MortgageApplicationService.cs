@@ -46,9 +46,9 @@ namespace mortgage_application.Services
                 ApplicantDto.LoanYears == null || ApplicantDto.LoanYears < 1 || 
                 ApplicantDto.StartDate == null)
             {
-                return false
+                return false;
             }
-            return true
+            return true;
         }
 
         private List<MonthlyPayment> GenerateMonthlyMortgageRates()

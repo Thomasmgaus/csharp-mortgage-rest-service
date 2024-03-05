@@ -75,7 +75,7 @@ namespace mortgage_application.Controllers
 
                 Applicant updatedApplicant = ms.AddMortgageSchedule(applicant);
 
-                if(newApplicant == null)
+                if(updatedApplicant == null)
                 {
                     return BadRequest();
                 }

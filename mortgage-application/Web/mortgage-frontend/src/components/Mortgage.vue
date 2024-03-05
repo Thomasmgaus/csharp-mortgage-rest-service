@@ -18,8 +18,8 @@
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
     <div v-if="currentRecord" id="navigation">
-      <button v-if="showBackButton" @click="back()">View Last Record</button>
-      <button v-if="showForwardButton" @click="forward()">View Next Record</button>
+      <button :disabled="!showBackButton" @click="back()">View Last Record</button>
+      <button :disabled="!showForwardButton" @click="forward()">View Next Record</button>
     </div>
     <MortgageDisplay v-if="currentRecord"
                      :mortgage-record="currentRecord.Payments"></MortgageDisplay>
