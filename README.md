@@ -11,7 +11,9 @@ Make sure to download dotnet 7 if you haven't already and have npm verison 10.2.
 [Mongo Db Community](https://www.mongodb.com/try/download/community) will be enough to run locally. 
 Once MongoDb community is installed you can view documents from Mongo DB compass. The application _should_ create the database and Applicant table automatically upon first run of the asp.net service.
 
-Next you should be abloe to navigate to <repository-directory>/csharp-mortgage-rest-service/mortgage-application/ and run **dotnet run**. This should start a local service on port **5137**
+Next you should be abloe to navigate to <repository-directory>/csharp-mortgage-rest-service/mortgage-application/ and run 
+
+**dotnet run --project mortgage-application.csproj** This should start a local service on port **5137**
 
 Then navigate to csharp-mortgae-rest-service/mortgage-application/web/mortgage-frontend and run **npm i**
 
