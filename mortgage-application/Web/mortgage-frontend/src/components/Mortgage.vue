@@ -10,16 +10,16 @@
         <label class="spacing">Start Date</label>
       </div>
       <div id="fields" class="applicant-column">
-        <input v-model="principleAmount">
-        <input v-model="annualRate">
-        <input v-model="loanYears">
+        <input type="number" v-model="principleAmount">
+        <input type="number" v-model="annualRate">
+        <input type="number" v-model="loanYears">
         <input v-model="startDate" type="date">
       </div>
     </div>
     <button class="submit-button" @click="generateRates()">Generate loan rates</button>
     <div v-if="currentRecord" id="navigation">
-      <button v-if="showBackButton" @click="back()">View Last Record</button>
-      <button v-if="showForwardButton" @click="forward()">View Next Record</button>
+      <button :disabled="!showBackButton" class="navigation-button" @click="back()">View Last Record</button>
+      <button :disabled="!showForwardButton" class="navigation-button" @click="forward()">View Next Record</button>
     </div>
     <MortgageDisplay v-if="currentRecord"
                      :mortgage-record="currentRecord.Payments"></MortgageDisplay>
@@ -209,6 +209,10 @@ h3 {
 
 .error-message {
   background-color: orangered;
+}
+
+.navigation-button {
+  padding: 8px
 }
 
 </style>

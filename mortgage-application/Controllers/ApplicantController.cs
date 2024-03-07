@@ -43,6 +43,11 @@ namespace mortgage_application.Controllers
 
                 Applicant newApplicant = ms.CreateMortgageSchedule();
 
+                if(newApplicant == null)
+                {
+                    return BadRequest();
+                }
+
                 await _applicantService.CreateAsync(newApplicant);
 
                 return CreatedAtAction(nameof(Post), new { id = newApplicant.Id }, JsonConvert.SerializeObject(newApplicant));
