@@ -36,7 +36,7 @@ namespace mortgage_application.Services
 
                 return applicant;
             }
-            return null;
+            return applicant;
        }
 
         private Boolean VerifyDto()

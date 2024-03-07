@@ -75,11 +75,6 @@ namespace mortgage_application.Controllers
 
                 Applicant updatedApplicant = ms.AddMortgageSchedule(applicant);
 
-                if(updatedApplicant == null)
-                {
-                    return BadRequest();
-                }
-
                 await _applicantService.UpdateAsync(id, updatedApplicant);
 
                 return CreatedAtAction(nameof(Post), new { id = updatedApplicant.Id }, JsonConvert.SerializeObject(updatedApplicant));
