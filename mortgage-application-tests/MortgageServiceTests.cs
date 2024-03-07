@@ -13,17 +13,17 @@ public class MortgageServiceTests
     {
         List<MonthlyPayment> mp = new List<MonthlyPayment>();
 
-        MonthlyPayment one = new MonthlyPayment("3/19/2024", 29.17, 820.05, 849.22, 9179.95, 29.17, 849.22);
-        MonthlyPayment two = new MonthlyPayment("4/19/2024", 55.94, 822.45, 1698.44, 8357.50, 26.77, 849.22);
-        MonthlyPayment three = new MonthlyPayment("5/19/2024", 80.32, 824.84, 2547.66, 7532.66, 24.38, 849.22);
+        MonthlyPayment one = new MonthlyPayment("3/19/2024", "29.17", "820.05", "849.22", "9179.95", "29.17", "849.22");
+        MonthlyPayment two = new MonthlyPayment("4/19/2024", "55.94", "822.45", "1698.44", "8357.50", "26.77", "849.22");
+        MonthlyPayment three = new MonthlyPayment("5/19/2024", "80.32", "824.84", "2547.66", "7532.66", "24.38", "849.22");
 
         mp.Add(one);
         mp.Add(two);
         mp.Add(three);
 
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = 10000;
-        applicantDto.AnnualRate = 3.5;
+        applicantDto.PrincipleAmount = 10000m;
+        applicantDto.AnnualRate = 3.5m;
         applicantDto.LoanYears = 1;
         applicantDto.StartDate = DateTime.Now;
 
@@ -37,8 +37,8 @@ public class MortgageServiceTests
     public void TestCreateNonInitalizedPayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = 0;
-        applicantDto.AnnualRate = 0;
+        applicantDto.PrincipleAmount = 0m;
+        applicantDto.AnnualRate = 0m;
         applicantDto.LoanYears = 0;
 
         MortgageApplicationService ms = new MortgageApplicationService(applicantDto);
@@ -53,8 +53,8 @@ public class MortgageServiceTests
     public void TestCreateNegativePayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = -160000;
-        applicantDto.AnnualRate = -3.5;
+        applicantDto.PrincipleAmount = -160000m;
+        applicantDto.AnnualRate = -3.5m;
         applicantDto.LoanYears = -15;
         applicantDto.StartDate = DateTime.Now;
 
@@ -69,8 +69,8 @@ public class MortgageServiceTests
     public void TestCreatePracticalPayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = 160000;
-        applicantDto.AnnualRate = 3.5;
+        applicantDto.PrincipleAmount = 160000m;
+        applicantDto.AnnualRate = 3.5m;
         applicantDto.LoanYears = 15;
         applicantDto.StartDate =  DateTime.Now;
 
@@ -86,8 +86,8 @@ public class MortgageServiceTests
     public void TestUpdateNonInitalizedPayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = 0;
-        applicantDto.AnnualRate = 0;
+        applicantDto.PrincipleAmount = 0m;
+        applicantDto.AnnualRate = 0m;
         applicantDto.LoanYears = 0;
 
         MortgageApplicationService ms = new MortgageApplicationService(applicantDto);
@@ -101,8 +101,8 @@ public class MortgageServiceTests
     public void TestUpdateNegativePayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = -160000;
-        applicantDto.AnnualRate = -3.5;
+        applicantDto.PrincipleAmount = -160000m;
+        applicantDto.AnnualRate = -3.5m;
         applicantDto.LoanYears = -15;
         applicantDto.StartDate = DateTime.Now;
 
@@ -117,8 +117,8 @@ public class MortgageServiceTests
     public void TestUpdatePracticalPayload()
     {
         ApplicantDto applicantDto = new ApplicantDto();
-        applicantDto.PrincipleAmount = 160000;
-        applicantDto.AnnualRate = 3.5;
+        applicantDto.PrincipleAmount = 160000m;
+        applicantDto.AnnualRate = 3.5m;
         applicantDto.LoanYears = 15;
         applicantDto.StartDate =  DateTime.Now;
 

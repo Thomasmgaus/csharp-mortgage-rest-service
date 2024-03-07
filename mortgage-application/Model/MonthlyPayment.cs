@@ -3,14 +3,14 @@
     public class MonthlyPayment
     {
         public string PaymentDate;
-        public double InterestPaid;
-        public double PrinciplePaid;
-        public double Payment;
-        public double TotalInterest;
-        public double TotalPayment;
-        public double RemainingBalance;
+        public string InterestPaid;
+        public string PrinciplePaid;
+        public string Payment;
+        public string TotalInterest;
+        public string TotalPayment;
+        public string RemainingBalance;
 
-        public MonthlyPayment(string paymentDate, double interestPaid, double principlePaid, double Payment, double remainingBalance, double totalInterest, double totalPayment)
+        public MonthlyPayment(string paymentDate,  string interestPaid, string principlePaid, string Payment, string remainingBalance, string totalInterest, string totalPayment)
         {
             this.PaymentDate = paymentDate;
             this.InterestPaid = interestPaid;

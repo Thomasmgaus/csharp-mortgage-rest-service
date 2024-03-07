@@ -1,4 +1,5 @@
-﻿using mortgage_application.Dto;
+﻿using Microsoft.AspNetCore.Mvc.Infrastructure;
+using mortgage_application.Dto;
 using mortgage_application.Model;
 
 namespace mortgage_application.Services
@@ -41,9 +42,9 @@ namespace mortgage_application.Services
 
         private Boolean VerifyDto()
         {
-            if (ApplicantDto.PrincipleAmount == null || ApplicantDto.PrincipleAmount < 1 ||
-                ApplicantDto.AnnualRate == null || ApplicantDto.AnnualRate < 1 || 
-                ApplicantDto.LoanYears == null || ApplicantDto.LoanYears < 1 || 
+            if (ApplicantDto.PrincipleAmount < 1 ||
+                ApplicantDto.AnnualRate < 1 || 
+                ApplicantDto.LoanYears < 1 || 
                 ApplicantDto.StartDate == null)
             {
                 return false;
@@ -51,42 +52,47 @@ namespace mortgage_application.Services
             return true;
         }
 
+        private string Format(decimal number)
+        {
+            return number.ToString("C2");
+        }
+
         private List<MonthlyPayment> GenerateMonthlyMortgageRates()
         {
             List<MonthlyPayment> generateMortagePayments = new List<MonthlyPayment>();
 
             var loanMonths = ApplicantDto.LoanYears * 12;
-            double remainder = ApplicantDto.PrincipleAmount;
+            decimal remainder = ApplicantDto.PrincipleAmount;
             DateTime startDate = ApplicantDto.StartDate ?? DateTime.Now;
             var monlthyInterestRate = (ApplicantDto.AnnualRate / 100) / 12;
 
 
-            var exponent = Math.Pow(1 + monlthyInterestRate, loanMonths);
+            var exponent = Convert.ToDecimal(Math.Pow(1 + Convert.ToDouble(monlthyInterestRate), loanMonths));
             var numerator = monlthyInterestRate * exponent;
             var denomenator = exponent - 1;
 
-            var monthlyPayment = Math.Round(remainder * (numerator / denomenator), 2);
+            var monthlyPayment = remainder * (numerator / denomenator);
 
-            double totalInterest = 0;
+            decimal totalInterest = 0;
 
             for (int i = 0; i < loanMonths; i++)
             {
-                var interest = Math.Round(monlthyInterestRate * remainder, 2);
-                totalInterest = Math.Round(totalInterest + interest, 2);
-                var thisMonthPrinciple = Math.Round(monthlyPayment - interest, 2);
-                remainder = Math.Round(remainder - thisMonthPrinciple, 2);
+                var interest = monlthyInterestRate * remainder;
+                totalInterest = totalInterest + interest;
+                var thisMonthPrinciple = monthlyPayment - interest;
+                remainder = remainder - thisMonthPrinciple;
 
                 if(remainder < 0) remainder = 0;
                 
                 
                 MonthlyPayment record = new MonthlyPayment(
                     startDate.AddMonths(i).ToShortDateString(),
-                    interest, 
-                    thisMonthPrinciple, 
-                    monthlyPayment,
-                    remainder,
-                    totalInterest, 
-                    Math.Round(monthlyPayment * (i + 1), 2)
+                    Format(interest), 
+                    Format(thisMonthPrinciple), 
+                    Format(monthlyPayment),
+                    Format(remainder),
+                    Format(totalInterest), 
+                    Format(monthlyPayment * (i + 1))
                    );
                 generateMortagePayments.Add(record);
             }
