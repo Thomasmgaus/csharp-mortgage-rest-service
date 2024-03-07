@@ -54,6 +54,7 @@ namespace mortgage_application.Controllers
 
             } catch(Exception ex)
             {
+                Console.WriteLine($"Error creating applicant ", ex.ToString());  
                 return BadRequest(ex.ToString());
             }
         }
@@ -81,6 +82,7 @@ namespace mortgage_application.Controllers
 
             } catch(Exception ex)
             {
+                Console.WriteLine($"Error updating applicant with id {id} ", ex.ToString());  
                 return BadRequest(ex.ToString());
             }
         }
