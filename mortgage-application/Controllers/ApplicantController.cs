@@ -43,12 +43,18 @@ namespace mortgage_application.Controllers
 
                 Applicant newApplicant = ms.CreateMortgageSchedule();
 
+                if(newApplicant == null)
+                {
+                    return BadRequest();
+                }
+
                 await _applicantService.CreateAsync(newApplicant);
 
                 return CreatedAtAction(nameof(Post), new { id = newApplicant.Id }, JsonConvert.SerializeObject(newApplicant));
 
             } catch(Exception ex)
             {
+                Console.WriteLine($"Error creating applicant ", ex.ToString());  
                 return BadRequest(ex.ToString());
             }
         }
@@ -76,6 +82,7 @@ namespace mortgage_application.Controllers
 
             } catch(Exception ex)
             {
+                Console.WriteLine($"Error updating applicant with id {id} ", ex.ToString());  
                 return BadRequest(ex.ToString());
             }
         }

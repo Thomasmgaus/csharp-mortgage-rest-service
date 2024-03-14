@@ -4,8 +4,8 @@ namespace mortgage_application.Model
 {
     public class Schedule
     {
-        public long PrincipleAmount { get; set; }
-        public double AnnualRate { get; set; }
+        public decimal PrincipleAmount { get; set; }
+        public decimal AnnualRate { get; set; }
         public int LoanYears{ get; set; }
         public String? StartDate { get; set; }
         public List<MonthlyPayment> Payments { get; set;}
