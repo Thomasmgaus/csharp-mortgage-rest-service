@@ -1,6 +1,6 @@
 # mortgage-frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+Vue Frontend for the mortgage-application written in asp.net
 
 ## Recommended IDE Setup
 
