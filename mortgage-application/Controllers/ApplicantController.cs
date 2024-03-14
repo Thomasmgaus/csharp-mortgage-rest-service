@@ -72,7 +72,7 @@ namespace mortgage_application.Controllers
 
                 await _applicantService.UpdateAsync(id, updatedApplicant);
 
-                return CreatedAtAction(nameof(Post), new { id = updatedApplicant.Id }, JsonConvert.SerializeObject(updatedApplicant));
+                return CreatedAtAction(nameof(Put), new { id = updatedApplicant.Id }, JsonConvert.SerializeObject(updatedApplicant));
 
             } catch(Exception ex)
             {
