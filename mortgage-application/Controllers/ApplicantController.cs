@@ -30,7 +30,7 @@ namespace mortgage_application.Controllers
                  return Ok(JsonConvert.SerializeObject(applicant));
             } catch(Exception ex)
             {
-                return BadRequest(ex.ToString());
+                return BadRequest($"Could not find user with {id}");
             } 
         }
 
@@ -55,7 +55,7 @@ namespace mortgage_application.Controllers
             } catch(Exception ex)
             {
                 Console.WriteLine($"Error creating applicant ", ex.ToString());  
-                return BadRequest(ex.ToString());
+                return BadRequest("Error creating applicant");
             }
         }
 
@@ -83,7 +83,7 @@ namespace mortgage_application.Controllers
             } catch(Exception ex)
             {
                 Console.WriteLine($"Error updating applicant with id {id} ", ex.ToString());  
-                return BadRequest(ex.ToString());
+                return BadRequest($"Error updating applicant with id {id}");
             }
         }
     }
