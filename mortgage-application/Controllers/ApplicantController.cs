@@ -60,8 +60,8 @@ namespace mortgage_application.Controllers
         }
 
         
-        [HttpPut("update/{id:length(24)}")]
-        public async Task<IActionResult> Put(String id, ApplicantDto applicantDto)
+        [HttpPatch("update/{id:length(24)}")]
+        public async Task<IActionResult> Patch(String id, ApplicantDto applicantDto)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace mortgage_application.Controllers
 
                 await _applicantService.UpdateAsync(id, updatedApplicant);
 
-                return CreatedAtAction(nameof(Put), new { id = updatedApplicant.Id }, JsonConvert.SerializeObject(updatedApplicant));
+                return Ok(JsonConvert.SerializeObject(applicant));
 
             } catch(Exception ex)
             {

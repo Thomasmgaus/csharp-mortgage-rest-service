@@ -21,8 +21,7 @@
       <button :disabled="!showBackButton" class="navigation-button" @click="back()">View Last Record</button>
       <button :disabled="!showForwardButton" class="navigation-button" @click="forward()">View Next Record</button>
     </div>
-    <MortgageDisplay v-if="currentRecord"
-                     :mortgage-record="currentRecord.Payments"></MortgageDisplay>
+    <MortgageDisplay v-if="currentRecord" :mortgage-record="currentRecord.Payments"></MortgageDisplay>
   </div>
 </template>
 
@@ -149,7 +148,7 @@ async function createNewUser(applicant: Applicant) {
 async function updateUser(id: string, applicant: Applicant) {
   try {
     const response = await fetch(`http://localhost:5137/applicant/update/${id}`, {
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(applicant),
       headers: {
         "Content-Type": "application/json"
@@ -161,7 +160,7 @@ async function updateUser(id: string, applicant: Applicant) {
       recordIndex.value = userMortgageRecord.value.Schedules.length - 1
     }
   } catch (e) {
-    console.log("Failed to post applicant data", e)
+    console.log("Failed to patch applicant data", e)
     error.value = "There was an issue generating rates, please try again"
   }
 }
